@@ -23,3 +23,10 @@ export function setPost(post) {
     payload: request
   };
 }
+
+export const DELETE_POST = 'DELETE_POST';
+export function deletePost(post) {
+  return axios.delete(`${getUrl}/${post.id}${urlKey}`).then(
+    () => fetchPosts()
+  )
+}

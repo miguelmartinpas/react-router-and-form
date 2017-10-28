@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators} from 'redux';
+import { Link } from 'react-router-dom';
 import { ListGroup, ListGroupItem, Button, Row, Col, Panel} from 'react-bootstrap';
 
 import App from './app';
@@ -13,18 +14,33 @@ class PostIndex extends React.Component {
     this.props.fetchPosts();
   }
 
+  clickDelete(post) {
+    this.props.deletePost(post);
+  }
+
   renderList() {
     if (_.isEmpty(this.props.posts)){
       return ( <div>Loading...</div> );
     }
-    console.log('this.props.posts', this.props.posts);
     return _.map(this.props.posts, post =>
       <ListGroupItem
         key={post.id}
         className="post-list-item"
-        href={`/post/${post.id}`}
       >
-        {post.title}
+        <Row>
+          <Col xs={10}>
+          <Link to={`/post/${post.id}`}>
+            {post.title}
+          </Link>
+          </Col>
+          <Col xs={2}>
+            <Button
+            type="button"
+            bsStyle="link"
+            onClick={() => this.clickDelete(post)}
+            >Delete</Button>
+          </Col>
+        </Row>
       </ListGroupItem>
     );
   }
@@ -63,7 +79,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators( { fetchPosts: Actions.fetchPosts }, dispatch );
+  return bindActionCreators( {
+    fetchPosts: Actions.fetchPosts,
+    deletePost: Actions.deletePost
+  }, dispatch );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostIndex);
